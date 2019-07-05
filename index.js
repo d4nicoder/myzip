@@ -44,15 +44,14 @@ class MyZip {
 	async save (destination) {
 		return new Promise(async (resolve, reject) => {
 
-			for (let i = 0; i < this.sources.length; i++) {
-				try {
-					await this._add(this.sources[i].source, this.sources[i].destination)
-				} catch (e) {
-					if (this.exitOnError) {
-						throw e
-					}
-					console.error(e)
+			try {
+				await this._processAll()
+			} catch (e) {
+				if (this.exitOnError) {
+					reject(e)
+					return
 				}
+				console.error(e)
 			}
 
 			const ws = fs.createWriteStream(destination)
@@ -72,7 +71,16 @@ class MyZip {
 	 * @param {Response} res Response object
 	 * @param {String} name Name of the file to download (optional)
 	 */
-	pipe(res, name) {
+	async pipe(res, name) {
+		try {
+			await this._processAll()
+		} catch (e) {
+			if (this.exitOnError) {
+				reject(e)
+				return
+			}
+			console.error(e)
+		}
 		name = (typeof name !== 'string') ? 'out.zip' : name
 		try {
 			res.setHeader('Content-Disposition', 'attachment; filename="' + name +'"')
@@ -123,8 +131,15 @@ class MyZip {
 
 			return this
 		} else if (stat.isDirectory()) {
+			let dst
+			if (source.slice(-1) === '/') {
+				dst = destination
+			} else {
+				dst = destination + '/' + path.basename(source)
+			}
+			
 			try {
-				await this._addDir(source, destination + '/' + path.basename(source))
+				await this._addDir(source, dst)
 			} catch (e) {
 				throw e
 			}
@@ -133,6 +148,20 @@ class MyZip {
 		}
 
 		throw new Error('The route is neither a directory nor a file')
+	}
+
+	async _processAll () {
+		for (let i = 0; i < this.sources.length; i++) {
+			try {
+				await this._add(this.sources[i].source, this.sources[i].destination)
+			} catch (e) {
+				if (this.exitOnError) {
+					throw e
+				}
+				console.error(e)
+			}
+		}
+		return true
 	}
 
 	/**
