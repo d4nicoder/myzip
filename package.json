@@ -1,0 +1,15 @@
+{
+  "name": "myzip",
+  "version": "0.1.0",
+  "description": "A extremely simple library to create zip files",
+  "main": "index.js",
+  "author": {
+    "name": "Daniel Cañada García",
+    "email": "danitetus@gmail.com"
+  },
+  "repository": "https://gitlab.com/danitetus/myzip",
+  "license": "MIT",
+  "dependencies": {
+    "jszip": "^3.2.2"
+  }
+}
