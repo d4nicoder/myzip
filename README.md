@@ -21,6 +21,8 @@ new MyZip()
 			console.error(e)
 		})
 ```
+**Note**: If the folder to add ends with slash '/' it will add all the content without create that folder inside the zip
+
 Pleas report any problem or issue in the issues section.
 
 #### TODO

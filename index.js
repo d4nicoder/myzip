@@ -95,6 +95,66 @@ class MyZip {
 	}
 
 	/**
+	 * Extracts a zip file on destination folder
+	 * @param {String} source Path of the zip file to extract
+	 * @param {String} destination Path of destination
+	 */
+	async extract(source, destination) {
+		// Only absolute paths on destination!
+		if (!path.isAbsolute(destination)) {
+			throw(new Error('Absolute path for destination required'))
+		}
+
+		let buf
+		try {
+			buf = fs.promises.readFile(source)
+		} catch (e) {
+			throw e
+		}
+		let zip
+		try {
+			zip = await JSZip.loadAsync(buf, {checkCRC32: true})
+		} catch (e) {
+			throw e
+		}
+		const files = Array.from(Object.values(zip.files)).map(f => {
+			return {
+				name: f.name,
+				dir: f.dir
+			}
+		})
+
+		for (let i = 0; i < files.length; i++) {
+			let buffer
+			const fileName = files[i].name
+			const isDir = files[i].dir
+			try {
+				buffer = await zip.files[fileName].async('nodebuffer')
+			} catch (e) {
+				throw e
+			}
+
+			let dst
+			if (isDir) {
+				dst = path.join(destination, fileName)
+				try {
+					await this._ensureDir(dst)
+				} catch (e) {
+					throw e
+				}
+				continue
+			} else {
+				dst = path.join(destination, fileName)
+				try {
+					await fs.promises.writeFile(dst, buffer)
+				} catch (e) {
+					throw e
+				}
+			}
+		}
+	}
+
+	/**
 	 * Add file or folder to the zip object
 	 * @param {String} source Path to the source file or directory
 	 * @param {String} destination Path to the root folder inside the zip
@@ -150,6 +210,9 @@ class MyZip {
 		throw new Error('The route is neither a directory nor a file')
 	}
 
+	/**
+	 * Stores all files into the ZipObject
+	 */
 	async _processAll () {
 		for (let i = 0; i < this.sources.length; i++) {
 			try {
@@ -203,6 +266,42 @@ class MyZip {
 				console.error(e)
 			}
 		}
+	}
+
+	/**
+	 * Creates if not exists all folders of the path
+	 * @param {String} dir Path of the dir
+	 */
+	async _ensureDir (dir) {
+		let fullPath = []
+		dir = dir.split(path.sep)
+
+		for (let i = 0; i < dir.length; i++) {
+			let exists = true
+			let stat
+			if (dir[i] === '') {
+				continue
+			}
+			fullPath.push(dir[i])
+			const actualDir = path.sep + fullPath.join(path.sep)
+			try {
+				stat = await fs.promises.stat(actualDir)
+			} catch (e) {
+				exists = false
+			}
+
+			if (exists && stat.isDirectory()) {
+				continue
+			}
+
+			try {
+				await fs.promises.mkdir('/' + actualDir)
+			} catch (e) {
+				throw e
+			}
+		}
+
+		return true
 	}
 }
 
