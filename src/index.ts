@@ -182,7 +182,7 @@ export default class MyZip {
     const stat = await fs.promises.stat(source)
 
     if (stat.isFile()) {
-      await this._add(source, destination)
+      await this._addFile(source, destination)
     } else if (stat.isDirectory()) {
       let dst
 			if (source.slice(-1) === '/') {

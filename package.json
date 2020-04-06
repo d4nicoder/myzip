@@ -1,6 +1,6 @@
 {
   "name": "myzip",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A extremely simple library to create zip files",
   "main": "dist/index.js",
   "author": {

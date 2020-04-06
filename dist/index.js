@@ -181,7 +181,7 @@ class MyZip {
             // Check file or directory
             const stat = yield fs_1.default.promises.stat(source);
             if (stat.isFile()) {
-                yield this._add(source, destination);
+                yield this._addFile(source, destination);
             }
             else if (stat.isDirectory()) {
                 let dst;

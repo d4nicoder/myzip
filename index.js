@@ -165,11 +165,11 @@ class MyZip {
 		for (let i = 0; i < this.excludes.length; i++) {
 			if (typeof this.excludes[i] === 'string') {
 				if (this.excludes[i] === path.basename(source)) {
-					return this
+					return
 				}
 			} else if (typeof this.excludes[i].test !== 'undefined') {
 				if (this.excludes[i].test(path.basename(source))) {
-					return this
+					return
 				}
 			}
 		}
