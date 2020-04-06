@@ -14,7 +14,7 @@ export default class MyZip {
   private sources: ISource[] = []
   private exit: boolean = false
 
-  constructor (basePath: string) {
+  constructor () {
     this.zip = new JSZip()
     return this
   }
