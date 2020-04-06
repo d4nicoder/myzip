@@ -1,6 +1,6 @@
 # MyZip
 
-Simple zip library to compress files and folders.
+Simple zip library to compress and extract files and folders.
 
 #### Dependencies
 - jszip v^3.2.2
@@ -44,6 +44,3 @@ new MyZip()
 ```
 
 Pleas report any problem or issue in the issues section.
-
-#### TODO
-- Method to uncompress files
