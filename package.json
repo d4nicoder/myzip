@@ -1,11 +1,15 @@
 {
   "name": "myzip",
-  "version": "0.3.1",
+  "version": "1.0.0-beta1",
   "description": "A extremely simple library to create zip files",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": {
     "name": "Daniel Cañada García",
     "email": "danitetus@gmail.com"
+  },
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "npx tsc"
   },
   "repository": "https://gitlab.com/danitetus/myzip",
   "license": "MIT",

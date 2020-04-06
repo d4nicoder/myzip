@@ -8,7 +8,7 @@ interface ISource {
   destination: string
 }
 
-class MyZip {
+export class MyZip {
   private zip: JSZip
   private excludes: (string|RegExp)[] = []
   private sources: ISource[] = []
@@ -23,7 +23,7 @@ class MyZip {
 	 * Define new exclusion
 	 * @param {String | RegExp} pattern String or RegExp to exclude
 	 */
-  public exclude (pattern: string | RegExp) {
+  public exclude (pattern: string | RegExp): MyZip {
     this.excludes.push(pattern)
     return this
   }
@@ -33,14 +33,15 @@ class MyZip {
 	 * @param {String} source Source file or directory to add
 	 * @param {String} destination Destination folder inside zip file (optional)
 	 */
-  public add (source: string, destination: string) {
+  public add (source: string, destination: string): MyZip {
     this.sources.push({
       destination,
       source,
     })
+    return this
   }
 
-  public exitOnError (value: boolean) {
+  public exitOnError (value: boolean): MyZip {
     this.exit = value
     return this
   }
@@ -49,7 +50,7 @@ class MyZip {
 	 * Save the zip file to the destination
 	 * @param {String} destination Destination path to save the zip
 	 */
-  public async save (destination: string) {
+  public async save (destination: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
 
       try {
@@ -70,7 +71,7 @@ class MyZip {
 				})
 				.on('error', (err: Error) => {
 					reject(err)
-				})
+        })
     })
   }
 
@@ -79,7 +80,7 @@ class MyZip {
 	 * @param {Response} res Response object
 	 * @param {String} name Name of the file to download (optional)
 	 */
-  public async pipe(res: ServerResponse, name: string) {
+  public async pipe(res: ServerResponse, name: string): Promise<void> {
     try {
       await this._processAll()
     } catch (e) {
@@ -107,7 +108,7 @@ class MyZip {
 	 * @param {String} source Path of the zip file to extract
 	 * @param {String} destination Path of destination
 	 */
-  public async extract (source: string, destination: string) {
+  public async extract (source: string, destination: string): Promise<void> {
     // Only absolute paths on destination
     if (!path.isAbsolute(destination)) {
       throw new Error('Absolute path for destination required')
@@ -141,18 +142,18 @@ class MyZip {
 	 * @param {String} source Path to the source file or directory
 	 * @param {String} destination Path to the root folder inside the zip
 	 */
-  private async _add (source: string, destination: string) {
+  private async _add (source: string, destination: string): Promise<void> {
     destination = typeof destination === 'string' ? destination : ''
 
     for (let i = 0; i < this.excludes.length; i++) {
       const exclude = this.excludes[i]
       if (typeof exclude === 'string') {
         if (exclude === path.basename(source)) {
-          return this
+          return
         }
       } else if (typeof exclude.test !== 'undefined') {
         if (exclude.test(path.basename(source))) {
-          return this
+          return
         }
       }
     }
@@ -174,13 +175,12 @@ class MyZip {
     } else {
       throw new Error('The path is neither a directory nor a file')
     }
-    return this
   }
 
   /**
 	 * Stores all files into the ZipObject
 	 */
-  private async _processAll () {
+  private async _processAll (): Promise<void> {
     for (let i = 0; i < this.sources.length; i++) {
       try {
         await this._add(this.sources[i].source, this.sources[i].destination)
@@ -191,7 +191,6 @@ class MyZip {
         console.error(e)
       }
     }
-    return true
   }
 
   /**
@@ -199,7 +198,7 @@ class MyZip {
 	 * @param {String} source Source path file
 	 * @param {String} destination Path to the destination inside zip
 	 */
-  private async _addFile (source: string, destination: string) {
+  private async _addFile (source: string, destination: string): Promise<void> {
     const filename = path.basename(source)
     const destinationFolder = typeof destination === 'string' ?destination + '/' + filename : filename
 
@@ -215,7 +214,7 @@ class MyZip {
 	 * @param {String} source Path to the source directory
 	 * @param {String} destination Path to the destination folder inside zip
 	 */
-  private async _addDir (source: string, destination: string) {
+  private async _addDir (source: string, destination: string): Promise<void> {
     const files = await fs.promises.readdir(source)
 
     for (let i = 0; i < files.length; i++) {
@@ -234,7 +233,7 @@ class MyZip {
 	 * Creates if not exists all folders of the path
 	 * @param {String} dir Path of the dir
 	 */
-  private async _ensureDir (dirPath: string) {
+  private async _ensureDir (dirPath: string): Promise<void> {
     const fullPath: string[] = []
     const dir = dirPath.split(path.sep)
 
@@ -263,7 +262,5 @@ class MyZip {
         throw e
       }
     }
-
-    return true
   }
 }
