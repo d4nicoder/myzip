@@ -9,8 +9,20 @@
   },
   "repository": "https://gitlab.com/danitetus/myzip",
   "license": "MIT",
-  "keywords": ["zip", "unzip", "compression", "deflate", "inflate", "compress"],
+  "keywords": [
+    "zip",
+    "unzip",
+    "compression",
+    "deflate",
+    "inflate",
+    "compress"
+  ],
   "dependencies": {
     "jszip": "^3.2.2"
+  },
+  "devDependencies": {
+    "@types/jszip": "^3.1.7",
+    "@types/node": "^13.11.0",
+    "typescript": "^3.8.3"
   }
 }
