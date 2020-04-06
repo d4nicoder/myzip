@@ -13,7 +13,7 @@ new MyZip()
 	.exclude('node_modules')
 	.add('<path_to_folder>') // Absolute path
   .add('<path_to_file>', 'folder/inside/zip')
-  filter((source) => {
+  .filter((source) => {
     if (source === 'myExcludedDir') {
       return false
     }

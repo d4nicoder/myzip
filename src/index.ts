@@ -33,8 +33,9 @@ export default class MyZip {
    * Function to evaluate if the source file has to be included in the zip or not
    * @param func Function tha returns a Boolean or a Promise<boolean>
    */
-  public filter (func: (itemPath: string) => boolean | Promise<boolean>) {
+  public filter (func: (itemPath: string) => boolean | Promise<boolean>): MyZip {
     this.customFilter = func
+    return this
   }
 
   /**

@@ -38,6 +38,7 @@ class MyZip {
      */
     filter(func) {
         this.customFilter = func;
+        return this;
     }
     /**
        * Add some file or directory to the zip file
