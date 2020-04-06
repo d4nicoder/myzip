@@ -8,7 +8,7 @@ interface ISource {
   destination: string
 }
 
-export class MyZip {
+export default class MyZip {
   private zip: JSZip
   private excludes: (string|RegExp)[] = []
   private sources: ISource[] = []

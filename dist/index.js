@@ -268,5 +268,5 @@ class MyZip {
         });
     }
 }
-exports.MyZip = MyZip;
+exports.default = MyZip;
 //# sourceMappingURL=index.js.map

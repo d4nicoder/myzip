@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { ServerResponse } from "http";
-export declare class MyZip {
+export default class MyZip {
     private zip;
     private excludes;
     private sources;
