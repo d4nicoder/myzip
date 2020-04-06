@@ -13,6 +13,7 @@ export default class MyZip {
   private excludes: (string|RegExp)[] = []
   private sources: ISource[] = []
   private exit: boolean = false
+  private customFilter: (itemPath: string) => boolean | Promise<boolean> = () => true
 
   constructor () {
     this.zip = new JSZip()
@@ -26,6 +27,14 @@ export default class MyZip {
   public exclude (pattern: string | RegExp): MyZip {
     this.excludes.push(pattern)
     return this
+  }
+
+  /**
+   * Function to evaluate if the source file has to be included in the zip or not
+   * @param func Function tha returns a Boolean or a Promise<boolean>
+   */
+  public filter (func: (itemPath: string) => boolean | Promise<boolean>) {
+    this.customFilter = func
   }
 
   /**
@@ -145,6 +154,16 @@ export default class MyZip {
   private async _add (source: string, destination: string): Promise<void> {
     destination = typeof destination === 'string' ? destination : ''
 
+    if (this.customFilter instanceof Promise) {
+      const valid = await this.customFilter(source)
+      if (!valid) {
+        return
+      }
+    } else if (typeof this.customFilter === 'function') {
+      if (!this.customFilter(source)) {
+        return
+      }
+    }
     for (let i = 0; i < this.excludes.length; i++) {
       const exclude = this.excludes[i]
       if (typeof exclude === 'string') {

@@ -16,10 +16,11 @@ const jszip_1 = __importDefault(require("jszip"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 class MyZip {
-    constructor(basePath) {
+    constructor() {
         this.excludes = [];
         this.sources = [];
         this.exit = false;
+        this.customFilter = () => true;
         this.zip = new jszip_1.default();
         return this;
     }
@@ -30,6 +31,13 @@ class MyZip {
     exclude(pattern) {
         this.excludes.push(pattern);
         return this;
+    }
+    /**
+     * Function to evaluate if the source file has to be included in the zip or not
+     * @param func Function tha returns a Boolean or a Promise<boolean>
+     */
+    filter(func) {
+        this.customFilter = func;
     }
     /**
        * Add some file or directory to the zip file
@@ -145,6 +153,17 @@ class MyZip {
     _add(source, destination) {
         return __awaiter(this, void 0, void 0, function* () {
             destination = typeof destination === 'string' ? destination : '';
+            if (this.customFilter instanceof Promise) {
+                const valid = yield this.customFilter(source);
+                if (!valid) {
+                    return;
+                }
+            }
+            else if (typeof this.customFilter === 'function') {
+                if (!this.customFilter(source)) {
+                    return;
+                }
+            }
             for (let i = 0; i < this.excludes.length; i++) {
                 const exclude = this.excludes[i];
                 if (typeof exclude === 'string') {

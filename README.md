@@ -12,7 +12,13 @@ const MyZip = require('myzip')
 new MyZip()
 	.exclude('node_modules')
 	.add('<path_to_folder>') // Absolute path
-	.add('<path_to_file>', 'folder/inside/zip')
+  .add('<path_to_file>', 'folder/inside/zip')
+  filter((source) => {
+    if (source === 'myExcludedDir') {
+      return false
+    }
+    return true
+  })
 	.save('destination.zip')
 		.then(() => {
 			console.log('Success!!')

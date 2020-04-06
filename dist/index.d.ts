@@ -5,12 +5,18 @@ export default class MyZip {
     private excludes;
     private sources;
     private exit;
-    constructor(basePath: string);
+    private customFilter;
+    constructor();
     /**
        * Define new exclusion
        * @param {String | RegExp} pattern String or RegExp to exclude
        */
     exclude(pattern: string | RegExp): MyZip;
+    /**
+     * Function to evaluate if the source file has to be included in the zip or not
+     * @param func Function tha returns a Boolean or a Promise<boolean>
+     */
+    filter(func: (itemPath: string) => boolean | Promise<boolean>): void;
     /**
        * Add some file or directory to the zip file
        * @param {String} source Source file or directory to add

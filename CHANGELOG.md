@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [1.0.0] - 2020-04-06
+### Added:
+- Method filter: Now you can add a custom function to evaluate if one file or folder has to be included in the zip file.
 ### Changed:
 - Refactorized code into Typescript
 
