@@ -24,7 +24,7 @@ class MyZip {
         this.zip = new jszip_1.default();
         return this;
     }
-    /**
+    /*
        * Define new exclusion
        * @param {String | RegExp} pattern String or RegExp to exclude
        */
@@ -32,7 +32,7 @@ class MyZip {
         this.excludes.push(pattern);
         return this;
     }
-    /**
+    /*
      * Function to evaluate if the source file has to be included in the zip or not
      * @param func Function tha returns a Boolean or a Promise<boolean>
      */
@@ -40,15 +40,17 @@ class MyZip {
         this.customFilter = func;
         return this;
     }
-    /**
+    /*
        * Add some file or directory to the zip file
        * @param {String} source Source file or directory to add
        * @param {String} destination Destination folder inside zip file (optional)
+     * @param {String} new name for this item
        */
-    add(source, destination) {
+    add(source, destination, newName) {
         this.sources.push({
             destination,
             source,
+            newName: typeof newName === 'string' ? newName : '',
         });
         return this;
     }
@@ -56,7 +58,7 @@ class MyZip {
         this.exit = value;
         return this;
     }
-    /**
+    /*
        * Save the zip file to the destination
        * @param {String} destination Destination path to save the zip
        */
@@ -85,7 +87,7 @@ class MyZip {
             }));
         });
     }
-    /**
+    /*
        * Stream the zip file to a response object
        * @param {Response} res Response object
        * @param {String} name Name of the file to download (optional)
@@ -114,7 +116,7 @@ class MyZip {
             }).pipe(res);
         });
     }
-    /**
+    /*
        * Extracts a zip file on destination folder
        * @param {String} source Path of the zip file to extract
        * @param {String} destination Path of destination
@@ -146,12 +148,12 @@ class MyZip {
             }
         });
     }
-    /**
+    /*
        * Add file or folder to the zip object
        * @param {String} source Path to the source file or directory
        * @param {String} destination Path to the root folder inside the zip
        */
-    _add(source, destination) {
+    _add(source, destination, newName) {
         return __awaiter(this, void 0, void 0, function* () {
             destination = typeof destination === 'string' ? destination : '';
             if (this.customFilter instanceof Promise) {
@@ -181,7 +183,7 @@ class MyZip {
             // Check file or directory
             const stat = yield fs_1.default.promises.stat(source);
             if (stat.isFile()) {
-                yield this._addFile(source, destination);
+                yield this._addFile(source, destination, newName);
             }
             else if (stat.isDirectory()) {
                 let dst;
@@ -198,14 +200,14 @@ class MyZip {
             }
         });
     }
-    /**
+    /*
        * Stores all files into the ZipObject
        */
     _processAll() {
         return __awaiter(this, void 0, void 0, function* () {
             for (let i = 0; i < this.sources.length; i++) {
                 try {
-                    yield this._add(this.sources[i].source, this.sources[i].destination);
+                    yield this._add(this.sources[i].source, this.sources[i].destination, this.sources[i].newName);
                 }
                 catch (e) {
                     if (this.exit) {
@@ -216,14 +218,14 @@ class MyZip {
             }
         });
     }
-    /**
+    /*
        * Add file to the zip object
        * @param {String} source Source path file
        * @param {String} destination Path to the destination inside zip
        */
-    _addFile(source, destination) {
+    _addFile(source, destination, newName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filename = path_1.default.basename(source);
+            const filename = !newName ? path_1.default.basename(source) : newName;
             const destinationFolder = typeof destination === 'string' ? destination + '/' + filename : filename;
             const readBuffer = fs_1.default.createReadStream(source);
             this.zip.file(destinationFolder, readBuffer, {
@@ -232,7 +234,7 @@ class MyZip {
             });
         });
     }
-    /**
+    /*
        * Add dir and his content to the zip file
        * @param {String} source Path to the source directory
        * @param {String} destination Path to the destination folder inside zip
@@ -253,7 +255,7 @@ class MyZip {
             }
         });
     }
-    /**
+    /*
        * Creates if not exists all folders of the path
        * @param {String} dir Path of the dir
        */
