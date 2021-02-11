@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2021-02-11
+
+### Fixed
+
+- When unzip to an unexisting folder, it didn't create that folder first
+
 ## [1.1.0] - 2020-05-07
 
 ### Added

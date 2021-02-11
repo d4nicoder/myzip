@@ -127,6 +127,8 @@ class MyZip {
             if (!path_1.default.isAbsolute(destination)) {
                 throw new Error('Absolute path for destination required');
             }
+            // Ensure dir
+            yield this._ensureDir(destination);
             const buf = yield fs_1.default.promises.readFile(source);
             const zip = yield jszip_1.default.loadAsync(buf, { checkCRC32: true });
             const files = Array.from(Object.values(zip.files)).map((file) => {

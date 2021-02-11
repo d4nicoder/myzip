@@ -127,6 +127,9 @@ export default class MyZip {
       throw new Error('Absolute path for destination required')
     }
 
+    // Ensure dir
+    await this._ensureDir(destination)
+
     const buf = await fs.promises.readFile(source)
     const zip = await JSZip.loadAsync(buf, {checkCRC32: true})
 
