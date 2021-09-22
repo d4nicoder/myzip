@@ -1,6 +1,6 @@
 {
   "name": "myzip",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A extremely simple library to create zip files",
   "main": "dist/index.js",
   "author": {
@@ -12,7 +12,7 @@
     "test": "jest",
     "build": "npx tsc"
   },
-  "repository": "https://gitlab.com/danitetus/myzip",
+  "repository": "https://github.com/d4nicoder/myzip",
   "license": "MIT",
   "keywords": [
     "zip",
