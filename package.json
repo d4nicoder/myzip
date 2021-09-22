@@ -9,6 +9,7 @@
   },
   "scripts": {
     "prepublish": "npm run build",
+    "test": "jest",
     "build": "npx tsc"
   },
   "repository": "https://gitlab.com/danitetus/myzip",
