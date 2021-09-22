@@ -4,7 +4,7 @@ Simple zip library to compress and extract files and folders.
 
 #### Dependencies
 
-- jszip v^3.2.2
+- jszip v^3.6.0
 
 #### Usage to generate zip
 
