@@ -48,4 +48,5 @@ new MyZip()
   })
 ```
 
-Pleas report any problem or issue in the issues section.
+Please report any problem or issue in the issues section.
+If you think that this package is a little bit util, leave me a star ;)
